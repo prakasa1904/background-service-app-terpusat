@@ -3,6 +3,7 @@ package com.terpusat.com.services;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -14,12 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.app.Activity;
+
+import com.terpusat.com.services.menu.NavDrawerItem;
+import com.terpusat.com.services.menu.NavDrawerListAdapter;
+import com.terpusat.com.services.page.HomeFragment;
+import com.terpusat.com.services.page.SettingFragment;
+import com.terpusat.com.services.background.MainServices;
 
 import java.util.ArrayList;
-
-import com.terpusat.com.services.menu.*;
-import com.terpusat.com.services.page.*;
 
 public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
@@ -101,6 +104,10 @@ public class MainActivity extends Activity {
             // on first time display view for first nav item
             displayView(0);
         }
+
+        Intent i= new Intent(this, MainServices.class);
+        i.putExtra("name", "Prakasa");
+        this.startService(i);
     }
 
     /**
