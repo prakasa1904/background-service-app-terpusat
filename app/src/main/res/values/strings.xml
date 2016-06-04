@@ -27,4 +27,11 @@
     <string name="active_button">Active Service</string>
     <string name="inactive_button">Inactive Service</string>
 
+    <!-- Page Fragment -->
+    <string name="nama">Nama</string>
+    <string name="time">Time</string>
+    <string name="url">URL</string>
+    <string name="status">Status</string>
+    <string name="save">Save</string>
+
 </resources>

@@ -2,6 +2,7 @@ package com.terpusat.com.services.page;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.terpusat.com.services.R;
+import com.terpusat.com.services.background.MainServices;
 import com.terpusat.com.services.database.SqlliteDriver;
 import com.terpusat.com.services.monitor.GPSTracker;
 /**
@@ -49,9 +51,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 if(isChecked){
+                    Intent i= new Intent(parent, MainServices.class);
+                    parent.startService(i);
+
                     if(gps.canGetLocation()){
                         double latitude = gps.getLatitude();
                         double longitude = gps.getLongitude();
+
                         gpsStatus.setText("Longitude : " + longitude + " Latitude : " + latitude);
                         switchStatus.setText("Switch is currently ON");
                     }else{
@@ -62,7 +68,7 @@ public class HomeFragment extends Fragment {
                     }
                 }else{
                     gps.stopUsingGPS();
-                    gpsStatus.setText("Longitude : " + 0 + " Latitude : " + 0);
+                    gpsStatus.setText("Service Inactive");
                     switchStatus.setText("Switch is currently OFF");
                 }
             }
