@@ -104,10 +104,6 @@ public class MainActivity extends Activity {
             // on first time display view for first nav item
             displayView(0);
         }
-
-        Intent i= new Intent(this, MainServices.class);
-        i.putExtra("name", "Prakasa");
-        this.startService(i);
     }
 
     /**
