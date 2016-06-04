@@ -15,11 +15,12 @@ import java.util.HashMap;
  */
 public class SqlliteDriver extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "TerpusatService.db";
-    public static final String CONTACTS_TABLE_NAME = "config";
-    public static final String CONTACTS_COLUMN_ID = "id";
-    public static final String CONTACTS_COLUMN_TIME = "time";
-    public static final String CONTACTS_COLUMN_URL = "url";
-    public static final String CONTACTS_COLUMN_STATUS = "status";
+    public static final String PENGATURAN_TABLE_NAME = "service_pengaturan";
+    public static final String PENGATURAN_COLUMN_ID = "id";
+    public static final String PENGATURAN_COLUMN_NAMA = "nama";
+    public static final String PENGATURAN_COLUMN_TIME = "time";
+    public static final String PENGATURAN_COLUMN_URL = "url";
+    public static final String PENGATURAN_COLUMN_STATUS = "status";
     private HashMap hp;
 
     public SqlliteDriver(Context context)
@@ -31,39 +32,28 @@ public class SqlliteDriver extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         db.execSQL(
-                "create table config " +
-                        "(id integer primary key, time text,url text, integer status)"
+                "create table service_pengaturan " +
+                        "(id integer primary key, nama text, waktu text,url text, integer status)"
         );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO Auto-generated method stub
-        db.execSQL("DROP TABLE IF EXISTS config");
+        db.execSQL("DROP TABLE IF EXISTS service_pengaturan");
         onCreate(db);
     }
 
-    public boolean insertConfig(String time, String url, Integer status)
+    public boolean insertConfig(String nama, String time, String url, Integer status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("nama", nama);
         contentValues.put("time", time);
         contentValues.put("url", url);
         contentValues.put("status", status);
         db.insert("config", null, contentValues);
         return true;
-    }
-
-    public Cursor getData(int id){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from config where id="+id+"", null );
-        return res;
-    }
-
-    public int numberOfRows(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, CONTACTS_TABLE_NAME);
-        return numRows;
     }
 
     public boolean updateConfig(Integer id, String time, String url, Integer status)
@@ -73,16 +63,22 @@ public class SqlliteDriver extends SQLiteOpenHelper {
         contentValues.put("time", time);
         contentValues.put("url", url);
         contentValues.put("status", status);
-        db.update("config", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
+        db.update("service_pengaturan", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
     }
 
     public Integer deleteConfig(Integer id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("config",
+        return db.delete("service_pengaturan",
                 "id = ? ",
                 new String[] { Integer.toString(id) });
+    }
+
+    public int numberOfRows(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, PENGATURAN_TABLE_NAME);
+        return numRows;
     }
 
     public ArrayList<String> getAllCotacts()
@@ -91,13 +87,19 @@ public class SqlliteDriver extends SQLiteOpenHelper {
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from config", null );
+        Cursor res =  db.rawQuery( "select * from service_pengaturan", null );
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_TIME)));
+            array_list.add(res.getString(res.getColumnIndex(PENGATURAN_COLUMN_NAMA)));
             res.moveToNext();
         }
         return array_list;
+    }
+
+    public Cursor getDataById(int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from service_pengaturan where id="+id+"", null );
+        return res;
     }
 }
