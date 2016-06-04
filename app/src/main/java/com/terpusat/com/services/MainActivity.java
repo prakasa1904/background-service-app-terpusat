@@ -162,7 +162,7 @@ public class MainActivity extends Activity {
                 fragment = new HomeFragment(this);
                 break;
             case 1:
-                fragment = new SettingFragment();
+                fragment = new SettingFragment(this);
                 break;
             default:
                 break;

@@ -18,7 +18,7 @@ public class SqlliteDriver extends SQLiteOpenHelper {
     public static final String PENGATURAN_TABLE_NAME = "service_pengaturan";
     public static final String PENGATURAN_COLUMN_ID = "id";
     public static final String PENGATURAN_COLUMN_NAMA = "nama";
-    public static final String PENGATURAN_COLUMN_TIME = "time";
+    public static final String PENGATURAN_COLUMN_TIME = "waktu";
     public static final String PENGATURAN_COLUMN_URL = "url";
     public static final String PENGATURAN_COLUMN_STATUS = "status";
     private HashMap hp;
@@ -33,7 +33,7 @@ public class SqlliteDriver extends SQLiteOpenHelper {
         // TODO Auto-generated method stub
         db.execSQL(
                 "create table service_pengaturan " +
-                        "(id integer primary key, nama text, waktu text,url text, integer status)"
+                        "(id integer primary key, nama text, waktu text,url text, status integer)"
         );
     }
 
@@ -49,19 +49,28 @@ public class SqlliteDriver extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("nama", nama);
-        contentValues.put("time", time);
+        contentValues.put("waktu", time);
         contentValues.put("url", url);
         contentValues.put("status", status);
-        db.insert("config", null, contentValues);
+        db.insert("service_pengaturan", null, contentValues);
         return true;
     }
 
-    public boolean updateConfig(Integer id, String time, String url, Integer status)
+    public boolean updateConfigAll(Integer id, String time, String url, Integer status)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("time", time);
+        contentValues.put("waktu", time);
         contentValues.put("url", url);
+        contentValues.put("status", status);
+        db.update("service_pengaturan", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
+        return true;
+    }
+
+    public boolean updateConfigStatus(Integer id, Integer status)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
         contentValues.put("status", status);
         db.update("service_pengaturan", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
@@ -95,6 +104,15 @@ public class SqlliteDriver extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return array_list;
+    }
+
+    public Cursor getDataByName(){
+        if(this.numberOfRows() < 1)
+            this.insertConfig("setting_service", "5", "http://www.terpusat.com", 1);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select * from service_pengaturan where nama='setting_service'", null );
+        return res;
     }
 
     public Cursor getDataById(int id){
