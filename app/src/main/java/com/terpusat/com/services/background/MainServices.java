@@ -10,12 +10,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import com.terpusat.com.services.MainActivity;
 import com.terpusat.com.services.R;
+import com.terpusat.com.services.api.VerBeta;
 import com.terpusat.com.services.database.SqlliteDriver;
 import com.terpusat.com.services.monitor.GPSTracker;
+
+import java.util.ArrayList;
 
 /**
  * Created by prakasa on 03/06/16.
@@ -23,7 +25,10 @@ import com.terpusat.com.services.monitor.GPSTracker;
 public class MainServices extends Service {
     private static final int MY_NOTIFICATION_ID = 190492;
     SqlliteDriver mydb = new SqlliteDriver(this);
-    GPSTracker gps = new GPSTracker(this);
+    public ArrayList<String> dataForm = new ArrayList<String>();
+
+    @Override
+    public void onCreate() {}
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -56,7 +61,7 @@ public class MainServices extends Service {
                     PendingIntent.getService(this, 0, new Intent(this, MainServices.class), 0)
             );
         }else{
-            Toast.makeText(this,"Service Stoped", Toast.LENGTH_LONG).show();
+            // Doing Nothing If Config Not Like 1
         }
     }
 
@@ -68,31 +73,38 @@ public class MainServices extends Service {
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if( statusUpdate.matches("1") ) {
-            Notification myNotication;
-            Intent resultIntent = new Intent(this, MainActivity.class);
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-            stackBuilder.addParentStack(MainActivity.class);
-            stackBuilder.addNextIntent(resultIntent);
-            PendingIntent resultPendingIntent =
-                    stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-            Notification.Builder builder = new Notification.Builder(this);
+            GPSTracker gps = new GPSTracker(this);
+            /* Build Data To Post */
+            dataForm.add( String.valueOf("Longitude : " + gps.getLongitude()) + " Latitude : " + String.valueOf(gps.getLatitude()) );
+            dataForm.add( "1" );
+            dataForm.add( "5" );
+            /* ::::END:::: */
+            VerBeta apiVer1 = new VerBeta(dataForm, "");
+            if( apiVer1.postToServer().matches("true") ) {
+            /* Notif If All Execute Success */
+                Notification myNotication;
+                Intent resultIntent = new Intent(this, MainActivity.class);
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+                stackBuilder.addParentStack(MainActivity.class);
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification.Builder builder = new Notification.Builder(this);
 
-            builder.setAutoCancel(false);
-            builder.setTicker("Tracker Mode On");
-            builder.setContentTitle("Terpusat");
-            builder.setContentText("GPS Mode Actived");
-            builder.setSmallIcon(R.drawable.ic_people);
-            builder.setContentIntent(resultPendingIntent);
-            builder.setOngoing(true);
-            //builder.setSubText("Change Setting");   //API level 16
-            //builder.setNumber(100);
-            builder.build();
+                builder.setAutoCancel(false);
+                builder.setTicker("Tracker Mode On");
+                builder.setContentTitle("Terpusat");
+                builder.setContentText("GPS Mode Actived");
+                builder.setSmallIcon(R.drawable.ic_people);
+                builder.setContentIntent(resultPendingIntent);
+                builder.setOngoing(true);
+                //builder.setSubText("Change Setting");   //API level 16
+                //builder.setNumber(100);
+                builder.build();
 
-            myNotication = builder.getNotification();
-            manager.notify(MY_NOTIFICATION_ID, myNotication);
-            if( gps.canGetLocation() )
-                gps.getLocation();
-
+                myNotication = builder.getNotification();
+                manager.notify(MY_NOTIFICATION_ID, myNotication);
+            }
         }else {
             manager.cancel(MY_NOTIFICATION_ID);
 

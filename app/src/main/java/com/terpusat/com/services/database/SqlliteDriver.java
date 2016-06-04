@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,9 +70,10 @@ public class SqlliteDriver extends SQLiteOpenHelper {
 
     public boolean updateConfigStatus(Integer id, Integer status)
     {
+        Log.e("Gagal Ga Ya", "Ko Ga Update Dataku");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("status", status);
+        contentValues.put("status", Integer.toString(status));
         db.update("service_pengaturan", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
     }

@@ -1,5 +1,6 @@
 package com.terpusat.com.services.monitor;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
@@ -50,7 +51,6 @@ public class GPSTracker extends Service implements LocationListener {
     public Location getLocation() {
         try {
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
-            //locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             // getting GPS status
             isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -142,6 +142,7 @@ public class GPSTracker extends Service implements LocationListener {
     /**
      * Function to show settings alert dialog
      * On pressing Settings button will lauch Settings Options
+     * Only For UIX Application, Dont Try To Call This Method In Background Service
      * */
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
