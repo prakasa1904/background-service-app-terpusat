@@ -15,6 +15,7 @@ import com.terpusat.com.services.MainActivity;
 import com.terpusat.com.services.R;
 import com.terpusat.com.services.api.VerBeta;
 import com.terpusat.com.services.database.SqlliteDriver;
+import com.terpusat.com.services.monitor.DeviceInformation;
 import com.terpusat.com.services.monitor.GPSTracker;
 
 import java.util.ArrayList;
@@ -73,9 +74,11 @@ public class MainServices extends Service {
 
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if( statusUpdate.matches("1") ) {
+            DeviceInformation devinfo = new DeviceInformation(this);
             GPSTracker gps = new GPSTracker(this);
             /* Build Data To Post */
-            dataForm.add( String.valueOf("Longitude : " + gps.getLongitude()) + " Latitude : " + String.valueOf(gps.getLatitude()) );
+            String FullText = "Batrei Level : " + String.valueOf(devinfo.getBatreiLevel()) + " " + String.valueOf("Longitude : " + gps.getLongitude()) + " Latitude : " + String.valueOf(gps.getLatitude());
+            dataForm.add( FullText );
             dataForm.add( "1" );
             dataForm.add( "5" );
             /* ::::END:::: */

@@ -38,7 +38,7 @@ public class VerBeta {
         try {
             HttpURLConnection connection = null;
             DataOutputStream outputStream = null;
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build(); // Strict Mode
             StrictMode.setThreadPolicy(policy);
 
             if (filename != "false")
